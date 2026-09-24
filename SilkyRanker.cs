@@ -1,14 +1,18 @@
 namespace Silky;
 
-// Configure to your liking :)
-public class SilkyOptions
+public class SilkyRanker
 {
-	// How much each post's likes matter;
-	public double LikeWeight { get; set; } = 1.0;
+	private readonly _SilkyOptions _options;
 
-	// How much the author's recent activity matters
-	public double ActivityWeight { get; set; } = 0.5;
+	// "options = null" makes the argument optional. "??" means: use the left side unless it's null, otherwise right side.
+	public SilkyRanker(SilkyOptions? options = null)
+	{
+		_options = options ?? new SilkyOptions();
+	}
 
-	// After this many hours, a posts score is halved. 0 or less = no decay or half life lol.
-	public double HalfLifeHours { get; set; } = 24;
+	public List<RankedPost> Rank(IEnumerable<PostSignals> posts, IEnumerable<AuthorSignals> authors, DateTime nowUtc)
+	{
+		// Dictionary look up table for feeding it author IDs and getting their activity. It throws if two rows share an AuthorId, so send one row per author.
+		var activityByAuthor = authors.ToDictionary(a => a.AuthorId, a => a.RecentActivityCount);
+	}
 }
