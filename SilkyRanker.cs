@@ -2,7 +2,7 @@ namespace Silky;
 
 public class SilkyRanker
 {
-	private readonly _SilkyOptions _options;
+	private readonly SilkyOptions _options;
 
 	// "options = null" makes the argument optional. "??" means: use the left side unless it's null, otherwise right side.
 	public SilkyRanker(SilkyOptions? options = null)
@@ -19,7 +19,7 @@ public class SilkyRanker
 			// The actual ranking logic
 			.Select(p => new RankedPost(
 				p.PostId,
-				CalculatedScore(p, activityByBuilder, nowUtc),
+				CalculatedScore(p, activityByAuthor, nowUtc),
 				p.CreatedAtUtc))
 			// Highest score first
 			.OrderByDescending(r => r.Score)
@@ -37,7 +37,7 @@ public class SilkyRanker
 
 		// Log(1 + x) stops huge numbers from dominating. Log (1 + 0) = 0, so no likes or no activity simply adds nothing.
 		var likeScore = Math.Log(1 + post.LikeCount) * _options.LikeWeight;
-		var activityScore = Math.Log(1 + activity) * _options.ActvityWeight;
+		var activityScore = Math.Log(1 + activity) * _options.ActivityWeight;
 		var rawScore = likeScore + activityScore;
 
 		if (_options.HalfLifeHours <= 0) return rawScore;
@@ -47,5 +47,7 @@ public class SilkyRanker
 
 		// This factor halves every HalfLifeHours: 1.0 -> 0.5 -> 0.25... and so on :)
 		var decay = Math.Pow(0.5, ageHours / _options.HalfLifeHours);
+
+		return rawScore * decay;
 	}
 }
