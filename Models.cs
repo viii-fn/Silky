@@ -7,4 +7,4 @@ public record PostSignals(Guid PostId, Guid AuthorId, DateTime CreatedAtUtc, int
 public record AuthorSignals(Guid AuthorId, int RecentActivityCount);
 
 // The organized list of ranked posts or what comes back. It's score and creation time (for tie breaks lol)
-public record RankedPost
+public record RankedPost(Guid PostId, double Score, DateTime CreatedAtUtc);
