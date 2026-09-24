@@ -46,6 +46,6 @@ public class SilkyRanker
 		var ageHours = Math.Max(0, (nowUtc - post.CreatedAtUtc).TotalHours);
 
 		// This factor halves every HalfLifeHours: 1.0 -> 0.5 -> 0.25... and so on :)
-		var decay = Math.Pow(0.5, ageHours / _options.HalfLifeHours)
+		var decay = Math.Pow(0.5, ageHours / _options.HalfLifeHours);
 	}
 }
